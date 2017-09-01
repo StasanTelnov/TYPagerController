@@ -7,6 +7,7 @@
 //
 
 #import "TYTabPagerBar.h"
+#import "TYTabPagerController.h"
 
 @interface TYTabPagerBar ()<UICollectionViewDelegateFlowLayout, UICollectionViewDataSource> {
     struct {
@@ -25,6 +26,9 @@
 @property (nonatomic, assign) NSInteger countOfItems;
 
 @property (nonatomic, assign) NSInteger curIndex;
+
+@property (nonatomic) UISwipeGestureRecognizer *leftSwipe;
+@property (nonatomic) UISwipeGestureRecognizer *rightSwipe;
 
 @end
 
@@ -67,12 +71,13 @@
     }
     collectionView.delegate = self;
     collectionView.dataSource = self;
+    collectionView.clipsToBounds = NO;
     [self addSubview:collectionView];
     _collectionView = collectionView;
 }
 
 - (void)addUnderLineView {
-     UIView *progressView = [[UIView alloc]init];
+    UIView *progressView = [[UIView alloc]init];
     progressView.backgroundColor = [UIColor redColor];
     [_collectionView addSubview:progressView];
     _progressView = progressView;
@@ -119,6 +124,20 @@
     _layout = layout;
     if (updateLayout) {
         [self reloadData];
+    }
+}
+
+-(void)setEnableSwiping:(BOOL)enableSwiping {
+    _enableSwiping = enableSwiping;
+    if (_enableSwiping) {
+        self.leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+        [self.leftSwipe setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [self addGestureRecognizer:self.leftSwipe];
+        
+        
+        self.rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+        [self.rightSwipe setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self addGestureRecognizer:self.rightSwipe];
     }
 }
 
@@ -237,6 +256,32 @@
     return CGSizeZero;
 }
 
+#pragma mark - swipe gesture actions
+-(void)handleSwipe:(UISwipeGestureRecognizer *)recognizer {
+    NSInteger newIndex = self.curIndex;
+    switch (recognizer.direction) {
+        case UISwipeGestureRecognizerDirectionLeft:
+            newIndex++;
+            break;
+            
+        case UISwipeGestureRecognizerDirectionRight:
+            newIndex--;
+            break;
+            
+        default:
+            break;
+    }
+    if (newIndex < 0) {
+        newIndex = self.countOfItems - 1;
+    }
+    if (newIndex >= self.countOfItems) {
+        newIndex = 0;
+    }
+    if ([_delegate respondsToSelector:@selector(pagerTabBar:didSelectItemAtIndex:)]) {
+        [_delegate pagerTabBar:self didSelectItemAtIndex:newIndex];
+    }
+}
+
 #pragma mark - transition cell
 
 - (void)transitionFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex animated:(BOOL)animated
@@ -249,6 +294,14 @@
         [self.layout transitionFromCell:fromCell toCell:toCell animate:animated];
     }
     [self.layout setUnderLineFrameWithIndex:toIndex animated:fromCell && animated ? animated: NO];
+    if (self.pagerController.isInfinite) {
+        if (_curIndex == 0) {
+            [self.pagerController scrollToControllerAtRealIndex:(self.countOfItems - 2)];
+        }
+        if (_curIndex == (self.countOfItems - 1)) {
+            [self.pagerController scrollToControllerAtRealIndex:1];
+        }
+    }
 }
 
 - (void)transitionFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex progress:(CGFloat)progress
@@ -260,6 +313,14 @@
     }else {
         [self.layout transitionFromCell:fromCell toCell:toCell progress:progress];
     }
+//    if (self.layout.staticTabBarCells) {
+//        [self.collectionView scrollToItemAtIndexPath:[self.collectionView indexPathForCell:fromCell] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+//        CGFloat changeOffset = progress;
+//        if (toIndex < fromIndex) {
+//            changeOffset *= -1;
+//        }
+//        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x + changeOffset, self.collectionView.contentOffset.y);
+//    }
     [self.layout setUnderLineFrameWithfromIndex:fromIndex toIndex:toIndex progress:progress];
 }
 

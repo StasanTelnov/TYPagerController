@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class TYTabPagerController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -62,6 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak, nullable) id<TYPagerViewLayoutDataSource> dataSource;
 @property (nonatomic, weak, nullable) id<TYPagerViewLayoutDelegate> delegate;
+
+@property (nonatomic, weak, nullable) TYTabPagerController *pagerController;
 
 // strong,will control the delegate,don't set delegate on other place.
 @property (nonatomic, strong, readonly) UIScrollView *scrollView;

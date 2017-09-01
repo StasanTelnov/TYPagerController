@@ -37,15 +37,31 @@
     _progressHorEdging = 6;
     _progressWidth = 0;
     _animateDuration = 0.25;
+    _isShadowed = NO;
     
     _normalTextFont = [UIFont systemFontOfSize:15];
     _selectedTextFont = [UIFont systemFontOfSize:18];
     _normalTextColor = [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1];
     _selectedTextColor = [UIColor redColor];
     _textColorProgressEnable = YES;
+    
+    _pagerTabBar.layer.shadowOffset = CGSizeMake(0, 1);
+    _pagerTabBar.layer.shadowColor = [UIColor colorWithRed:50.0f / 255.0f green:49.0f / 255.0f blue:49.0f / 255.0f alpha:0.15f].CGColor;
+    _pagerTabBar.layer.shadowRadius = 1.0;
+    _pagerTabBar.layer.shadowOpacity = 0.0;
+    _pagerTabBar.layer.masksToBounds = NO;
+    _pagerTabBar.clipsToBounds = NO;
 }
 
 #pragma mark - geter setter
+-(void)setIsShadowed:(BOOL)isShadowed {
+    _isShadowed = isShadowed;
+    if (_isShadowed) {
+        _pagerTabBar.layer.shadowOpacity = 1.0;
+    } else {
+        _pagerTabBar.layer.shadowOpacity = 0.0;
+    }
+}
 
 - (void)setProgressRadius:(CGFloat)progressRadius {
     _progressRadius = progressRadius;
@@ -280,6 +296,10 @@
         progressX = (toCellFrame.origin.x+progressToEdging-(fromCellFrame.origin.x+progressFromEdging))*progress+fromCellFrame.origin.x+progressFromEdging;
         width = (toCellFrame.size.width-2*progressToEdging)*progress + (fromCellFrame.size.width-2*progressFromEdging)*(1-progress);
     }
+    
+//    if (self.staticProgressView) {
+//        progressX = fromCellFrame.origin.x-progressFromEdging;
+//    }
     
     progressView.frame = CGRectMake(progressX,progressY, width, _progressHeight);
 }

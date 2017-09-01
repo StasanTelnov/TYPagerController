@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TYTabPagerBarLayout.h"
+@class TYTabPagerController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TYTabPagerBar : UIView
 
+@property (nonatomic, weak, nullable) TYTabPagerController *pagerController;
+
 @property (nonatomic, weak, readonly) UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *progressView;
 // automatically resized to self.bounds
@@ -59,6 +62,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) NSInteger curIndex;
 
 @property (nonatomic, assign) UIEdgeInsets contentInset;
+
+@property (nonatomic, assign) BOOL enableSwiping;
 
 - (void)registerClass:(Class)Class forCellWithReuseIdentifier:(NSString *)identifier;
 - (void)registerNib:(UINib *)nib forCellWithReuseIdentifier:(NSString *)identifier;

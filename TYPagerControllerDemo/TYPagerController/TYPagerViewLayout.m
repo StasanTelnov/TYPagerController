@@ -8,6 +8,7 @@
 
 #import "TYPagerViewLayout.h"
 #import <objc/runtime.h>
+#import "TYTabPagerController.h"
 
 @interface TYAutoPurgeCache : NSCache
 @end
@@ -262,8 +263,13 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
         return;
     }
     [self scrollViewWillScrollToView:_scrollView animate:animate];
-    [_scrollView setContentOffset:CGPointMake(index * CGRectGetWidth(_scrollView.frame),0) animated:NO];
-    [self scrollViewDidScrollToView:_scrollView animate:animate];
+    [_scrollView setContentOffset:CGPointMake(_scrollView.contentOffset.x + 1, 0) animated:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _scrollAnimated = animate;
+        [_scrollView setContentOffset:CGPointMake(index * CGRectGetWidth(_scrollView.frame), 0) animated:animate];
+        [self scrollViewDidScrollToView:_scrollView animate:animate];
+    });
+    
 }
 
 - (id)itemForIndex:(NSInteger)idx {
@@ -282,6 +288,9 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
 }
 
 - (UIView *)viewForItem:(id)item atIndex:(NSInteger)index {
+    if (self.pagerController && self.pagerController.isInfinite) {
+        index = self.pagerController.realIndex;
+    }
     UIView *view = [_dataSource pagerViewLayout:self viewForItem:item atIndex:index];
     return view;
 }

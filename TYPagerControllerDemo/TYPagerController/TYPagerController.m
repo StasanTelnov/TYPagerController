@@ -110,6 +110,15 @@
     return [_layout itemForIndex:index];
 }
 
+- (NSInteger)indexForController:(__kindof UIViewController *)controller {
+    for (NSInteger i = 0; i < self.countOfControllers; i++) {
+        if ([[self controllerForIndex:i] isEqual:controller]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 - (void)scrollToControllerAtIndex:(NSInteger)index animate:(BOOL)animate {
     [_layout scrollToItemAtIndex:index animate:animate];
 }

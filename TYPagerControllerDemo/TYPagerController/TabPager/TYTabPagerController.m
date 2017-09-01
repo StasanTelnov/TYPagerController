@@ -49,22 +49,26 @@
 - (void)addTabBar {
     self.tabBar.dataSource = self;
     self.tabBar.delegate = self;
+    self.tabBar.pagerController = self;
     [self registerClass:[TYTabPagerBarCell class] forTabBarCellWithReuseIdentifier:[TYTabPagerBarCell cellIdentifier]];
-    [self.view addSubview:self.tabBar];;
+    [self.view addSubview:self.tabBar];
+    [self.view bringSubviewToFront:self.tabBar];
 }
 
 - (void)addPagerController {
     self.pagerController.dataSource = self;
     self.pagerController.delegate = self;
+    self.pagerController.layout.pagerController = self;
     [self addChildViewController:self.pagerController];
     [self.view addSubview:self.pagerController.view];
+    [self.view bringSubviewToFront:self.tabBar];
 }
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    CGFloat orignY = _tabBarOrignY > 0 ? _tabBarOrignY :(!self.navigationController ||self.navigationController.navigationBarHidden || !(self.edgesForExtendedLayout&UIRectEdgeTop) ? 0 : 64);
-    self.tabBar.frame = CGRectMake(0, orignY, CGRectGetWidth(self.view.frame), _tabBarHeight);
-    self.pagerController.view.frame = CGRectMake(0, orignY+_tabBarHeight, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - _tabBarHeight-orignY);
+//    CGFloat orignY = _tabBarOrignY > 0 ? _tabBarOrignY :(!self.navigationController ||self.navigationController.navigationBarHidden || !(self.edgesForExtendedLayout&UIRectEdgeTop) ? 0 : 0);
+    self.tabBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), _tabBarHeight);
+    self.pagerController.view.frame = CGRectMake(0, _tabBarHeight, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - _tabBarHeight);
 }
 
 #pragma mark - getter setter
@@ -92,6 +96,15 @@
     }
 }
 
+-(void)setIsInfinite:(BOOL)isInfinite {
+    _isInfinite = isInfinite;
+    [self reloadData];
+}
+
+-(NSInteger)realIndex {
+    return [self moditifyIndexIfNeeded: self.pagerController.curIndex];
+}
+
 - (TYPagerController *)pagerController {
     if (!_pagerController) {
         _pagerController = [[TYPagerController alloc]init];
@@ -117,7 +130,18 @@
 }
 
 - (void)scrollToControllerAtIndex:(NSInteger)index animate:(BOOL)animate {
+    if (self.isInfinite) {
+        if (index == [_dataSource numberOfControllersInTabPagerController] - 1) {
+            index = 1;
+        } else {
+            index++;
+        }
+    }
     [self.pagerController scrollToControllerAtIndex:index animate:animate];
+}
+
+- (void)scrollToControllerAtRealIndex:(NSInteger)index {
+    [self.pagerController scrollToControllerAtIndex:index animate:NO];
 }
 
 - (void)registerClass:(Class)Class forTabBarCellWithReuseIdentifier:(NSString *)identifier {
@@ -142,11 +166,20 @@
 #pragma mark - TYTabPagerBarDataSource
 
 - (NSInteger)numberOfItemsInPagerTabBar {
-    return [_dataSource numberOfControllersInTabPagerController];
+    NSInteger numberOfItems = [_dataSource numberOfControllersInTabPagerController];
+    if (
+        self.isInfinite) {
+        numberOfItems += 2;
+    }
+    return numberOfItems;
 }
 
 - (UICollectionViewCell<TYTabPagerBarCellProtocol> *)pagerTabBar:(TYTabPagerBar *)pagerTabBar cellForItemAtIndex:(NSInteger)index {
     UICollectionViewCell<TYTabPagerBarCellProtocol> *cell = [pagerTabBar dequeueReusableCellWithReuseIdentifier:_identifier forIndex:index];
+    index = [self moditifyIndexIfNeeded:index];
+    if (index > [_dataSource numberOfControllersInTabPagerController]) {
+        index = [_dataSource numberOfControllersInTabPagerController] - 1;
+    }
     cell.titleLabel.text = [_dataSource tabPagerController:self titleForIndex:index];
     if ([_delegate respondsToSelector:@selector(tabPagerController:willDisplayCell:atIndex:)]) {
         [_delegate tabPagerController:self willDisplayCell:cell atIndex:index];
@@ -157,21 +190,44 @@
 #pragma mark - TYTabPagerBarDelegate
 
 - (CGFloat)pagerTabBar:(TYTabPagerBar *)pagerTabBar widthForItemAtIndex:(NSInteger)index {
+    index = [self moditifyIndexIfNeeded:index];
     NSString *title = [_dataSource tabPagerController:self titleForIndex:index];
     return [pagerTabBar cellWidthForTitle:title];
 }
 
 - (void)pagerTabBar:(TYTabPagerBar *)pagerTabBar didSelectItemAtIndex:(NSInteger)index {
+//    index = [self moditifyIndexIfNeeded:index];
     [_pagerController scrollToControllerAtIndex:index animate:YES];
+}
+
+-(NSInteger)moditifyIndexIfNeeded:(NSInteger)index {
+    if (self.isInfinite) {
+        if (index == 0) {
+            index = [_dataSource numberOfControllersInTabPagerController] + 1;
+        } else if (index == [_dataSource numberOfControllersInTabPagerController] + 1) {
+            index = 0;
+        } else {
+            index--;
+        }
+    }
+    return index;
 }
 
 #pragma mark - TYPagerControllerDataSource
 
 - (NSInteger)numberOfControllersInPagerController {
-    return [_dataSource numberOfControllersInTabPagerController];
+    NSInteger numberOfItems = [_dataSource numberOfControllersInTabPagerController];
+    if (self.isInfinite) {
+        numberOfItems += 2;
+    }
+    return numberOfItems;
 }
 
 - (UIViewController *)pagerController:(TYPagerController *)pagerController controllerForIndex:(NSInteger)index prefetching:(BOOL)prefetching {
+    index = [self moditifyIndexIfNeeded:index];
+    if (index > [_dataSource numberOfControllersInTabPagerController]) {
+        index = [_dataSource numberOfControllersInTabPagerController] - 1;
+    }
     UIViewController *viewController = [_dataSource tabPagerController:self controllerForIndex:index prefetching:prefetching];
     return viewController;
 }

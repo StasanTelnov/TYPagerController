@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) CGFloat tabBarOrignY;
 @property (nonatomic, assign) CGFloat tabBarHeight;
+@property (nonatomic, assign) BOOL isInfinite;
+@property (nonatomic, readonly) NSInteger realIndex;
 
 // register tabBar cell
 - (void)registerClass:(Class)Class forTabBarCellWithReuseIdentifier:(NSString *)identifier;
@@ -56,6 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (void)scrollToControllerAtIndex:(NSInteger)index animate:(BOOL)animate;
+- (void)scrollToControllerAtRealIndex:(NSInteger)index;
 
 - (void)updateData;
 

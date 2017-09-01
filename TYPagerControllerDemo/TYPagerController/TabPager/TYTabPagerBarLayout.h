@@ -30,6 +30,8 @@ typedef NS_ENUM(NSUInteger, TYPagerBarStyle) {
 
 @property (nonatomic, assign) UIEdgeInsets sectionInset;
 
+@property (nonatomic, assign) BOOL isShadowed;
+
 // progress view
 @property (nonatomic, assign) CGFloat progressHeight;   // default 2
 @property (nonatomic, assign) CGFloat progressWidth; //if>0 progress width is equal,else progress width is cell width
@@ -54,6 +56,8 @@ typedef NS_ENUM(NSUInteger, TYPagerBarStyle) {
 @property (nonatomic, strong) UIColor *selectedTextColor;   // default white
 
 @property (nonatomic, assign) BOOL textColorProgressEnable; // default YES
+@property (nonatomic, assign) BOOL staticProgressView; //default NO
+@property (nonatomic, assign) BOOL staticTabBarCells; //default YES
 
 //   animate duration
 @property (nonatomic, assign) CGFloat animateDuration;  // default 0.3

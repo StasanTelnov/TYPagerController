@@ -71,7 +71,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) UIEdgeInsets contentInset;
 
 //if not visible, prefecth, cache view at index, return nil
-- (UIViewController *_Nullable)controllerForIndex:(NSInteger)index;
+- (__kindof UIViewController *_Nullable)controllerForIndex:(NSInteger)index;
+- (NSInteger)indexForController:(__kindof UIViewController *)controller;
 
 // register && dequeue's usage like tableView
 - (void)registerClass:(Class)Class forControllerWithReuseIdentifier:(NSString *)identifier;
