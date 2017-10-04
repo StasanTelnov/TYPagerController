@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // ScrollViewDelegate
 
-- (void)pagerControllerDidScroll:(TYPagerController *)pagerController;
+- (void)pagerControllerDidScroll:(TYPagerController *)pagerController to:(CGFloat)offset;
 - (void)pagerControllerWillBeginScrolling:(TYPagerController *)pagerController animate:(BOOL)animate;
 - (void)pagerControllerDidEndScrolling:(TYPagerController *)pagerController animate:(BOOL)animate;
 

@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // ScrollViewDelegate
 
-- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout;
+- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout to:(CGFloat)offset;
 - (void)pagerViewLayoutWillBeginScrollToView:(TYPagerViewLayout *)pagerViewLayout animate:(BOOL)animate;
 - (void)pagerViewLayoutDidEndScrollToView:(TYPagerViewLayout *)pagerViewLayout animate:(BOOL)animate;
 - (void)pagerViewLayoutWillBeginDragging:(TYPagerViewLayout *)pagerViewLayout;
@@ -63,6 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak, nullable) id<TYPagerViewLayoutDataSource> dataSource;
 @property (nonatomic, weak, nullable) id<TYPagerViewLayoutDelegate> delegate;
+@property (nonatomic, weak, nullable) id<TYPagerViewLayoutDelegate> delegateBarLayout;
 
 @property (nonatomic, weak, nullable) TYTabPagerController *pagerController;
 

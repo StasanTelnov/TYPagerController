@@ -210,6 +210,13 @@
     }
 }
 
+- (void)pagerDidScrollTo:(CGFloat)offset {
+//    NSLog(@"should scroll to %f", offset);
+    if (self.layout.staticProgressView) {
+//        [self.collectionView setContentOffset:CGPointMake(offset - 320 - self.layout.cellWidth / 2, 0)];
+    }
+}
+
 - (CGFloat)cellWidthForTitle:(NSString *)title {
     if (!title) {
         return CGSizeZero.width;

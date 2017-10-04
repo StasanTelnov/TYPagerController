@@ -198,7 +198,7 @@
     }
 }
 
-- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout {
+- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout to:(CGFloat)offset {
     if (_delegateFlags.viewDidScroll) {
         [_delegate pagerViewDidScroll:self];
     }

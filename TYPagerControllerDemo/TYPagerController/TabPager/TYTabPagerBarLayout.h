@@ -79,6 +79,7 @@ typedef NS_ENUM(NSUInteger, TYPagerBarStyle) {
 - (void)setUnderLineFrameWithIndex:(NSInteger)index animated:(BOOL)animated;
 
 - (void)setUnderLineFrameWithfromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex progress:(CGFloat)progress;
+
 @end
 
 NS_ASSUME_NONNULL_END

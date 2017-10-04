@@ -74,7 +74,7 @@
     _delegateFlags.transitionFromIndexToIndex = [delegate respondsToSelector:@selector(pagerController:transitionFromIndex:toIndex:animated:)];
     _delegateFlags.transitionFromIndexToIndexProgress = [delegate respondsToSelector:@selector(pagerController:transitionFromIndex:toIndex:progress:)];
     
-    _delegateFlags.viewDidScroll = [delegate respondsToSelector:@selector(pagerControllerDidScroll:)];
+    _delegateFlags.viewDidScroll = [delegate respondsToSelector:@selector(pagerControllerDidScroll:to:)];
     _delegateFlags.viewWillBeginScrolling = [delegate respondsToSelector:@selector(pagerControllerWillBeginScrolling:animate:)];
     _delegateFlags.viewDidEndScrolling = [delegate respondsToSelector:@selector(pagerControllerDidEndScrolling:animate:)];
 }
@@ -215,9 +215,9 @@
     }
 }
 
-- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout {
+- (void)pagerViewLayoutDidScroll:(TYPagerViewLayout *)pagerViewLayout to:(CGFloat)offset{
     if (_delegateFlags.viewDidScroll) {
-        [_delegate pagerControllerDidScroll:self];
+        [_delegate pagerControllerDidScroll:self to:offset];
     }
 }
 

@@ -51,6 +51,8 @@
     _pagerTabBar.layer.shadowOpacity = 0.0;
     _pagerTabBar.layer.masksToBounds = NO;
     _pagerTabBar.clipsToBounds = NO;
+    
+    _staticProgressView = NO;
 }
 
 #pragma mark - geter setter
@@ -201,17 +203,17 @@
     CGFloat currentTransform = (1.0 - _selectFontScale)*progress;
     fromCell.transform = CGAffineTransformMakeScale(1.0-currentTransform, 1.0-currentTransform);
     toCell.transform = CGAffineTransformMakeScale(_selectFontScale+currentTransform, _selectFontScale+currentTransform);
-    
+
     if (_normalTextColor == _selectedTextColor || !_selectedTextColor) {
         return;
     }
-    
+
     CGFloat narR=0,narG=0,narB=0,narA=1;
     [_normalTextColor getRed:&narR green:&narG blue:&narB alpha:&narA];
     CGFloat selR=0,selG=0,selB=0,selA=1;
     [_selectedTextColor getRed:&selR green:&selG blue:&selB alpha:&selA];
     CGFloat detalR = narR - selR ,detalG = narG - selG,detalB = narB - selB,detalA = narA - selA;
-    
+
     fromCell.titleLabel.textColor = [UIColor colorWithRed:selR+detalR*progress green:selG+detalG*progress blue:selB+detalB*progress alpha:selA+detalA*progress];
     toCell.titleLabel.textColor = [UIColor colorWithRed:narR-detalR*progress green:narG-detalG*progress blue:narB-detalB*progress alpha:narA-detalA*progress];
 }
@@ -297,9 +299,9 @@
         width = (toCellFrame.size.width-2*progressToEdging)*progress + (fromCellFrame.size.width-2*progressFromEdging)*(1-progress);
     }
     
-//    if (self.staticProgressView) {
-//        progressX = fromCellFrame.origin.x-progressFromEdging;
-//    }
+    if (self.staticProgressView) {
+        progressX = fromCellFrame.origin.x-progressFromEdging;
+    }
     
     progressView.frame = CGRectMake(progressX,progressY, width, _progressHeight);
 }

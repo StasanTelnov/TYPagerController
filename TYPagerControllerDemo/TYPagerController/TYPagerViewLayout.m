@@ -237,7 +237,7 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
     _delegate = delegate;
     _delegateFlags.transitionFromIndexToIndex = [delegate respondsToSelector:@selector(pagerViewLayout:transitionFromIndex:toIndex:animated:)];
     _delegateFlags.transitionFromIndexToIndexProgress = [delegate respondsToSelector:@selector(pagerViewLayout:transitionFromIndex:toIndex:progress:)];
-    _delegateFlags.pagerViewLayoutDidScroll = [delegate respondsToSelector:@selector(pagerViewLayoutDidScroll:)];
+    _delegateFlags.pagerViewLayoutDidScroll = [delegate respondsToSelector:@selector(pagerViewLayoutDidScroll:to:)];
 }
 
 #pragma mark - public
@@ -671,6 +671,7 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
     }
     // get scrolling direction
     CGFloat offsetX = scrollView.contentOffset.x;
+    
     TYPagerScrollingDirection direction = offsetX >= _preOffsetX ? TYPagerScrollingLeft : TYPagerScrollingRight;
     
     // caculate index and progress
@@ -684,7 +685,7 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
     _isTapScrollMoved = NO;
     
     if (_delegateFlags.pagerViewLayoutDidScroll) {
-        [_delegate pagerViewLayoutDidScroll:self];
+        [_delegate pagerViewLayoutDidScroll:self to:offsetX];
     }
 }
 
@@ -702,6 +703,9 @@ static NSString * kScrollViewFrameObserverKey = @"scrollView.frame";
     _scrollAnimated = animate;
     if ([_delegate respondsToSelector:@selector(pagerViewLayoutWillBeginScrollToView:animate:)]) {
         [_delegate pagerViewLayoutWillBeginScrollToView:self animate:animate];
+    }
+    if ([_delegateBarLayout respondsToSelector:@selector(pagerViewLayoutWillBeginScrollToView:animate:)]) {
+        [_delegateBarLayout pagerViewLayoutWillBeginScrollToView:self animate:animate];
     }
 }
 

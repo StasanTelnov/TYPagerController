@@ -74,6 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)scrollToItemFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex animate:(BOOL)animate;
 - (void)scrollToItemFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex progress:(CGFloat)progress;
+- (void)pagerDidScrollTo:(CGFloat)offset;
 
 - (CGFloat)cellWidthForTitle:(NSString * _Nullable)title;
 - (CGRect)cellFrameWithIndex:(NSInteger)index;

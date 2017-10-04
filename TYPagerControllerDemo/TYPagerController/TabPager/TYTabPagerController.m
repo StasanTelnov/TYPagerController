@@ -238,6 +238,10 @@
     [self.tabBar scrollToItemFromIndex:fromIndex toIndex:toIndex animate:animated];
 }
 
+- (void)pagerControllerDidScroll:(TYPagerController *)pagerController to:(CGFloat)offset {
+    [self.tabBar pagerDidScrollTo:offset];
+}
+
 -(void)pagerController:(TYPagerController *)pagerController transitionFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex progress:(CGFloat)progress {
     [self.tabBar scrollToItemFromIndex:fromIndex toIndex:toIndex progress:progress];
 }
